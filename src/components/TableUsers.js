@@ -5,6 +5,8 @@ import { fetchAllUser } from '../services/UserService';
 import ReactPaginate from 'react-paginate';
 import { ModalAddNew } from './ModalAddNew';
 import { ModalEditUser } from './ModalEditUser';
+import _ from "lodash"
+
 
 const TableUsers = (props) => {
   const [listUsers , setListUsers] = useState([]);
@@ -21,19 +23,30 @@ const TableUsers = (props) => {
   const handleUpdateTable = (user) => {
     setListUsers([user, ...listUsers])
   }
-  const handleEditUser= (user) => {
-      setDataUserEdit(user);
-      setIsShowModalEdit(true)
-      console.log(user);
+  const handleEditUserFromModal = (user) => {
+    let cloneListUsers = _.cloneDeep(listUsers);
+    let index = listUsers.findIndex(item => item.id === user.id);
+    cloneListUsers[index].first_name = user.first_name;
+    setListUsers(cloneListUsers);
+    console.log("list user", listUsers);
+    console.log("index", index);
+    console.log("list clone", cloneListUsers);
+    console.log("user:", user);
   }
-
   // using hook
+
+  const handleEditUser= (user) => {
+    setDataUserEdit(user);
+    setIsShowModalEdit(true)
+    // handleEditUserFromModal(user)
+    // console.log(user);
+}
   useEffect(() => {
     // call api 
     // axios.get('https://reqres.in/api/users?page=2').then(data=>{
     //   console.log('check data',data.data);
     // })
-    getUsers();
+    getUsers(1);
   }, [])
   const getUsers = async(page) => {
       let res = await fetchAllUser(page);
@@ -110,9 +123,10 @@ const TableUsers = (props) => {
       handleUpdateTable = {handleUpdateTable}
       />
       <ModalEditUser
-      show={isShowModalEdit}
-      dataUserEdit = {dataUserEdit}
-      handleClose = {handleClose}
+        show={isShowModalEdit}
+        dataUserEdit={dataUserEdit}
+        handleClose={handleClose}
+        handleEditUserFromModal={handleEditUserFromModal} // Confirm prop name
       />
           
       </>)

@@ -1,16 +1,46 @@
 import React, { useEffect, useState } from 'react'
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
-import {postCreateUser} from '../services/UserService'
-import { toast } from 'react-toastify';
+import axios from 'axios';
+import { putUpdateUser,postCreateUser } from '../services/UserService'; 
 
 export const ModalEditUser = (props) => {
-    const {show, handleClose, dataUserEdit} = props;
+    const { show, handleClose, dataUserEdit, handleEditUserFromModal } = props;
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
-    const handleEditUser = () => {
+    const [job, setJob] = useState("");
+  //   const putUpdateUser = async (userID, name, job) => {
+  //     try {
+  //         const response = await axios.put(`https://reqres.in/api/users/${userID}`, { name, job });
+  //         return response.data;
+  //     } catch (error) {
+  //         console.error('Update failed:', error);
+  //         throw error; // You can choose to handle the error as needed
+  //     }
+  // }
 
+    const handleEditUser = async () => {
+      console.log('name:', name);
+      console.log('dataUserEdit.id:', dataUserEdit.id);
+      try {
+        let res = await putUpdateUser(+dataUserEdit.id, name, job); // Update the email in the PUT request
+        console.log("API response:", res); // Log the full API response
+        if (res && res.updateAt) {
+            console.log("Update successful");
+            const updatedUser = {
+                first_name: name,
+                id: dataUserEdit.id
+            };
+            console.log("Updated user:", updatedUser);
+            handleEditUserFromModal(updatedUser);
+            handleClose();
+        } else {
+            console.log("Update not successful");
+        }
+    } catch (error) {
+        console.error("API request failed:", error);
     }
+    };
     // using hook
     useEffect (() =>{
         if(show){
