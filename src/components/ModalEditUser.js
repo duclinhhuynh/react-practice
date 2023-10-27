@@ -22,24 +22,25 @@ export const ModalEditUser = (props) => {
     const handleEditUser = async () => {
       console.log('name:', name);
       console.log('dataUserEdit.id:', dataUserEdit.id);
-      try {
-        let res = await putUpdateUser(+dataUserEdit.id, name, job); // Update the email in the PUT request
+      // try {
+        let res = await putUpdateUser(+dataUserEdit.id, name, email); // Update the email in the PUT request
         console.log("API response:", res); // Log the full API response
-        if (res && res.updateAt) {
+        // if (res && res.updateAt) {
             console.log("Update successful");
             const updatedUser = {
                 first_name: name,
-                id: dataUserEdit.id
+                email: email,
+                id: dataUserEdit.id,
             };
             console.log("Updated user:", updatedUser);
             handleEditUserFromModal(updatedUser);
             handleClose();
-        } else {
-            console.log("Update not successful");
-        }
-    } catch (error) {
-        console.error("API request failed:", error);
-    }
+        // } else {
+        //     console.log("Update not successful");
+        // }
+    // } catch (error) {
+    //     console.error("API request failed:", error);
+    // }
     };
     // using hook
     useEffect (() =>{

@@ -26,7 +26,9 @@ const TableUsers = (props) => {
   const handleEditUserFromModal = (user) => {
     let cloneListUsers = _.cloneDeep(listUsers);
     let index = listUsers.findIndex(item => item.id === user.id);
+    // clone first name and email
     cloneListUsers[index].first_name = user.first_name;
+    cloneListUsers[index].email = user.email;
     setListUsers(cloneListUsers);
     console.log("list user", listUsers);
     console.log("index", index);
