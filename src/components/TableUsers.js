@@ -5,6 +5,7 @@ import { fetchAllUser } from '../services/UserService';
 import ReactPaginate from 'react-paginate';
 import { ModalAddNew } from './ModalAddNew';
 import { ModalEditUser } from './ModalEditUser';
+import { ModalCofirm } from './ModalCofirm';
 import _ from "lodash"
 
 
@@ -14,10 +15,14 @@ const TableUsers = (props) => {
   const [totalPages, setTotalPages] = useState(0);
   const[isShowModelAddNew, setIsShowModalAddNew] = useState(false);
   const [isShowModalEdit, setIsShowModalEdit] = useState(false);
-  const [dataUserEdit, setDataUserEdit] = useState({})
+  const [dataUserEdit, setDataUserEdit] = useState({});
+  const [isShowModalDelete, setIsShowModalDelete] = useState(false);
+  const [dataUserDelete, setDataUserDelete] = useState({});
+
   const handleClose = () => {
     setIsShowModalAddNew(false)
     setIsShowModalEdit(false)
+    setIsShowModalDelete(false)
   }
 
   const handleUpdateTable = (user) => {
@@ -35,7 +40,7 @@ const TableUsers = (props) => {
     console.log("list clone", cloneListUsers);
     console.log("user:", user);
   }
-  // using hook
+ 
 
   const handleEditUser= (user) => {
     setDataUserEdit(user);
@@ -43,6 +48,18 @@ const TableUsers = (props) => {
     // handleEditUserFromModal(user)
     // console.log(user);
 }
+  const handleDeleteUser = (user) => {
+    setIsShowModalDelete(true);
+    setDataUserDelete(user)
+    console.log(user);
+  }
+
+  const handleDeleteUserFromModal = (user) => {
+    let cloneListUsers = _.cloneDeep(listUsers);
+    cloneListUsers = cloneListUsers.filter(item => item.id !== user.id);
+    setListUsers(cloneListUsers);
+  }
+   // using hook
   useEffect(() => {
     // call api 
     // axios.get('https://reqres.in/api/users?page=2').then(data=>{
@@ -91,7 +108,7 @@ const TableUsers = (props) => {
               <td>{item.last_name}</td>
               <td>
                 <button className='btn btn-warning mx-2' onClick={() => handleEditUser(item)}>Edit</button>
-                <button className='btn btn-danger mx-2'>Delete</button>
+                <button className='btn btn-danger mx-2' onClick={()=> handleDeleteUser(item)}>Delete</button>
               </td>
             </tr>
             )
@@ -130,7 +147,12 @@ const TableUsers = (props) => {
         handleClose={handleClose}
         handleEditUserFromModal={handleEditUserFromModal} // Confirm prop name
       />
-          
+      <ModalCofirm
+        show= {isShowModalDelete}
+        handleClose={handleClose}
+        dataUserDelete = {dataUserDelete}
+        handleDeleteUserFromModal ={handleDeleteUserFromModal}
+      />    
       </>)
 }
 export default TableUsers;

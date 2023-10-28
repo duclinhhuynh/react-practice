@@ -5,7 +5,8 @@ const instance = axios.create({
 })
 // add interceptors
 instance.interceptors.response.use(function(response){
-    return response.data;
+    console.log("check respone data", response);
+    return response.data ? response.data : {statusCode : response.status};
 },function(error){
     return Promise.reject(error);
 });

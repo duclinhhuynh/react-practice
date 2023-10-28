@@ -3,6 +3,7 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import {postCreateUser} from '../services/UserService'
 import { toast } from 'react-toastify';
+import { isEmpty } from 'lodash';
 
 export const ModalAddNew = (props) => {
     const {show, handleClose, handleUpdateTable} = props;
@@ -11,14 +12,18 @@ export const ModalAddNew = (props) => {
     const handleSaveUser = async() => {
       let res = await postCreateUser(name, email);
         console.log("check ", res);
-      if(res && res.id){
+      if(isEmpty(res.name) || isEmpty(res.email)){
+          toast.error('An error');
+      }  
+      else if(res && res.id){
         handleClose();
         setName('');
         setEmail('');
         toast.success('A user is created succeed');
-        props.handleUpdateTable({first_name: name, id: res.id})
+        props.handleUpdateTable({first_name: name, id: res.id, email: email})
         // success
-      }else{
+      }
+      else{
         toast.error('An error');
       }
    }
