@@ -22,7 +22,10 @@ export const ModalCofirm = (props) => {
    }
   return (
     <div>
-        <Modal show={show} onHide={handleClose}>
+        <Modal show={show} onHide={handleClose}
+         backdrop="static"
+         keyboard={false}
+        >
         <Modal.Header closeButton>
           <Modal.Title>Delete a user</Modal.Title>
         </Modal.Header>

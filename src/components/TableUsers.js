@@ -6,6 +6,8 @@ import ReactPaginate from 'react-paginate';
 import { ModalAddNew } from './ModalAddNew';
 import { ModalEditUser } from './ModalEditUser';
 import { ModalCofirm } from './ModalCofirm';
+import './TableUsers.scss'
+import '@fortawesome/fontawesome-free/css/all.min.css';
 import _ from "lodash"
 
 
@@ -18,6 +20,8 @@ const TableUsers = (props) => {
   const [dataUserEdit, setDataUserEdit] = useState({});
   const [isShowModalDelete, setIsShowModalDelete] = useState(false);
   const [dataUserDelete, setDataUserDelete] = useState({});
+  const [sortBy, setSortBy] = useState("asc");
+  const [sortField, setSortFied] = useState("id");
 
   const handleClose = () => {
     setIsShowModalAddNew(false)
@@ -59,6 +63,15 @@ const TableUsers = (props) => {
     cloneListUsers = cloneListUsers.filter(item => item.id !== user.id);
     setListUsers(cloneListUsers);
   }
+  const handleSort = (sortBy, sortField) => {
+    setSortBy(sortBy);
+    setSortFied(sortField)
+    let cloneListUsers = _.cloneDeep(listUsers);
+    cloneListUsers = _.orderBy(cloneListUsers, [sortField], [sortBy]);
+    setListUsers(cloneListUsers)
+    // console.log("clone", cloneListUsers);
+  }
+  // console.log("checksort", sortBy, sortField);
    // using hook
   useEffect(() => {
     // call api 
@@ -90,15 +103,45 @@ const TableUsers = (props) => {
     <Table striped bordered hover>
         <thead>
           <tr>
-            <th>ID</th>
-            <th>Email</th>
-            <th>FirstName</th>
-            <th>LastName</th>
+            <th> 
+              <div className='sort-header'>
+                <span>ID</span> 
+                <span>
+                  <i className="fa-solid fa-arrow-down-long"
+                  onClick={() => handleSort("desc","id")}
+                  ></i>
+                  <i className="fa-solid fa-arrow-up-long"
+                  onClick={() => handleSort("asc","id")}
+                  ></i>
+                </span>
+              </div>
+            </th>
+            <th >
+            <div className='sort-header'>
+                <span>Email</span> 
+              </div>
+            </th>
+            <th>
+              <div className='sort-header'>
+                <span>First Name</span> 
+                <span>
+                  <i className="fa-solid fa-arrow-down-long"
+                  onClick={() => handleSort("desc", "id")}
+                  ></i>
+                  <i className="fa-solid fa-arrow-up-long"
+                  onClick={() => handleSort("asc","first_name")}
+                  ></i>
+                </span>
+              </div>
+            </th>
+            <th>
+            <span>Last Name</span> 
+            </th>
             <th>Action</th>
           </tr>
         </thead>
         <tbody>
-          {listUsers&& listUsers.length > 0 && 
+          {listUsers && listUsers.length > 0 && 
           listUsers.map((item, index) => {
             return (
             <tr key={`users-${index}`}>
