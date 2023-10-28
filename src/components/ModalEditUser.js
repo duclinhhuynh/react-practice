@@ -46,6 +46,7 @@ export const ModalEditUser = (props) => {
     useEffect (() =>{
         if(show){
             setName(dataUserEdit.first_name)
+            setEmail(dataUserEdit.email)
         }
     },[dataUserEdit])
     // console.log("check props", dataUserEdit);
