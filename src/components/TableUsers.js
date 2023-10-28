@@ -6,9 +6,9 @@ import ReactPaginate from 'react-paginate';
 import { ModalAddNew } from './ModalAddNew';
 import { ModalEditUser } from './ModalEditUser';
 import { ModalCofirm } from './ModalCofirm';
+import _, { debounce } from "lodash"
 import './TableUsers.scss'
 import '@fortawesome/fontawesome-free/css/all.min.css';
-import _ from "lodash"
 
 
 const TableUsers = (props) => {
@@ -22,6 +22,7 @@ const TableUsers = (props) => {
   const [dataUserDelete, setDataUserDelete] = useState({});
   const [sortBy, setSortBy] = useState("asc");
   const [sortField, setSortFied] = useState("id");
+  const [keyword, setKeyword] = useState("");
 
   const handleClose = () => {
     setIsShowModalAddNew(false)
@@ -71,6 +72,20 @@ const TableUsers = (props) => {
     setListUsers(cloneListUsers)
     // console.log("clone", cloneListUsers);
   }
+
+  // using deboune avoid call api too much time
+  const handleSearch = debounce((event) => {
+    console.log(event.target.value);
+    let term = event.target.value;
+    if(term){
+      let cloneListUsers = _.cloneDeep(listUsers);
+      cloneListUsers = cloneListUsers.filter(item => item.email.includes(term))
+      setListUsers(cloneListUsers)
+      console.log(cloneListUsers);
+    }else{
+      getUsers(1)
+    }
+  },500);
   // console.log("checksort", sortBy, sortField);
    // using hook
   useEffect(() => {
@@ -97,9 +112,18 @@ const TableUsers = (props) => {
   }
     return (<> 
     <div className='my-3 add-new'>
-          <span></span>
+          <span className='px-0'>List user</span>
           <button onClick={()=> setIsShowModalAddNew(true)} className='btn btn-success'>Add user</button>
-        </div>
+    </div>
+    <div className='col-6 my-3 px-0'>
+        <input 
+        type="text"
+        className='form-control' 
+        placeholder='search user by email....'
+        // value={keyword}
+        onChange={(event)=> handleSearch(event)}
+        />
+    </div>
     <Table striped bordered hover>
         <thead>
           <tr>
