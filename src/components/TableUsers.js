@@ -1,3 +1,4 @@
+/* eslint-disable array-callback-return */
 import axios from 'axios';
 import Table from 'react-bootstrap/Table';
 import React, { useEffect, useState } from "react";
@@ -24,6 +25,7 @@ const TableUsers = (props) => {
   const [sortBy, setSortBy] = useState("asc");
   const [sortField, setSortFied] = useState("id");
   const [keyword, setKeyword] = useState("");
+  const [dataExport, setDataExport] = useState([]);
   
   const handleClose = () => {
     setIsShowModalAddNew(false)
@@ -112,6 +114,23 @@ const TableUsers = (props) => {
     getUsers(+event.selected + 1);
   }
 
+  const getUsersExport = (event, done) => {
+    let result = [];
+    if(listUsers && listUsers.length > 0){
+      result.push(["Id", "Email", "First name", "Last name"]);
+      listUsers.map((item, index) => {
+        let arr = [];
+        arr[0] = item.id;
+        arr[1] = item.email;
+        arr[2] = item.first_name;
+        arr[3] = item.last_name;
+        result.push(arr);
+      })
+      setDataExport(result);
+      done();
+    }
+  }
+
   const csvData = [
     ["firstname", "lastname", "email"],
     ["Ahmed", "Tomi", "ah@smthing.co.com"],
@@ -131,7 +150,10 @@ const TableUsers = (props) => {
              filename={"users.csv"}
              className="btn btn-primary"
              target="_blank"
-             data={csvData}>
+             data={dataExport}
+             asyncOnClick={true}
+             onClick={(event, done) => getUsersExport(event, done)}
+             >
               <i class="fa-solid fa-download"></i>
                Download</CSVLink>
             <button onClick={()=> setIsShowModalAddNew(true)} className='btn btn-success'>
