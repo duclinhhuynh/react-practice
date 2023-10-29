@@ -7,6 +7,7 @@ import { ModalAddNew } from './ModalAddNew';
 import { ModalEditUser } from './ModalEditUser';
 import { ModalCofirm } from './ModalCofirm';
 import _, { debounce } from "lodash"
+import { CSVLink, CSVDownload } from "react-csv";
 import './TableUsers.scss'
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
@@ -23,7 +24,7 @@ const TableUsers = (props) => {
   const [sortBy, setSortBy] = useState("asc");
   const [sortField, setSortFied] = useState("id");
   const [keyword, setKeyword] = useState("");
-
+  
   const handleClose = () => {
     setIsShowModalAddNew(false)
     setIsShowModalEdit(false)
@@ -110,10 +111,33 @@ const TableUsers = (props) => {
     console.log("event", event);
     getUsers(+event.selected + 1);
   }
+
+  const csvData = [
+    ["firstname", "lastname", "email"],
+    ["Ahmed", "Tomi", "ah@smthing.co.com"],
+    ["Raed", "Labes", "rl@smthing.co.com"],
+    ["Yezzi", "Min l3b", "ymin@cocococo.com"]
+  ];
     return (<> 
     <div className='my-3 add-new'>
           <span className='px-0'>List user</span>
-          <button onClick={()=> setIsShowModalAddNew(true)} className='btn btn-success'>Add user</button>
+          <div className='group-btns'>
+            <label htmlFor='test' className='btn btn-warning text-white'>
+            <i class="fa-solid fa-file-import"></i>
+              Import
+            </label>
+            <input id = 'test' type='file' hidden/>
+            <CSVLink
+             filename={"users.csv"}
+             className="btn btn-primary"
+             target="_blank"
+             data={csvData}>
+              <i class="fa-solid fa-download"></i>
+               Download</CSVLink>
+            <button onClick={()=> setIsShowModalAddNew(true)} className='btn btn-success'>
+            <i class="fa-solid fa-circle-plus"></i>
+            <span> Add User</span></button>
+           </div>
     </div>
     <div className='col-6 my-3 px-0'>
         <input 
