@@ -7,10 +7,12 @@ import ReactPaginate from 'react-paginate';
 import { ModalAddNew } from './ModalAddNew';
 import { ModalEditUser } from './ModalEditUser';
 import { ModalCofirm } from './ModalCofirm';
-import _, { debounce } from "lodash"
+import _, { debounce, head } from "lodash"
 import { CSVLink, CSVDownload } from "react-csv";
+import Papa from "papaparse";
 import './TableUsers.scss'
 import '@fortawesome/fontawesome-free/css/all.min.css';
+import { toast } from 'react-toastify';
 
 
 const TableUsers = (props) => {
@@ -130,7 +132,48 @@ const TableUsers = (props) => {
       done();
     }
   }
-
+  // using papaparse
+  const handleImportCSV = (event) => {
+    if(event.target && event.target.files && event.target.files[0]){
+      let file = event.target.files[0];
+      if(file.type !== "text/csv"){
+        toast.error("only accept csv file...")
+        return
+      }
+      console.log("file: ", file);
+      Papa.parse(file, {
+        // header: true,
+        complete: function(results) {
+          let rawCSV = results.data;
+          if(rawCSV.length > 0){
+            console.log('lenght raw', rawCSV[0]);
+            if(rawCSV[0] && rawCSV[0].length === 3){
+                if(rawCSV[0][0] !== 'email' || rawCSV[0][1] !== 'first_name' || rawCSV[0][2] !== 'last_name'){
+                  toast.error("wrong format CSV file...")
+                }
+                else{
+                  let result = [];
+                  rawCSV.map((item,index) => {
+                    if(index > 0 && item.length === 3){
+                      let obj = {};
+                      obj.email = item[0]
+                      obj.first_name = item[1]
+                      obj.last_name = item[2]
+                      result.push(obj)
+                    }
+                  })
+                  console.log("check rs", result);
+                  setListUsers(result);
+                }
+            }else{
+              toast.error('wrong lenght format CSV file!')
+            }
+          }
+          console.log("Finished:", results.data);
+        }
+      });
+    }
+  }
   const csvData = [
     ["firstname", "lastname", "email"],
     ["Ahmed", "Tomi", "ah@smthing.co.com"],
@@ -145,7 +188,9 @@ const TableUsers = (props) => {
             <i class="fa-solid fa-file-import"></i>
               Import
             </label>
-            <input id = 'test' type='file' hidden/>
+            <input id = 'test' type='file' hidden
+              onChange={(event) => handleImportCSV(event)}
+            />
             <CSVLink
              filename={"users.csv"}
              className="btn btn-primary"
