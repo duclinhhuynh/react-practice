@@ -13,5 +13,58 @@ code {
     monospace;
 }
 .app-container {
-
+  .title{
+    text-align: center;
+    font-size: 25px;
+    font-weight: 600;
+    padding-top: 30px;
+  }
+  .login-container {
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto;
+  }
+  .text {
+    padding-bottom: 3px;
+    font-weight: 600;
+  }
+  input {
+    padding: 10px;
+    outline: none;
+    background-color: #ccc;
+    margin-bottom: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 100%;
+    &:hover {
+      background-color: #dedede;
+      // border: 1px solid #dedede;
+    }
+  }
+  .input-2{
+    position: relative;
+    i{
+      position: absolute;
+      top: 17px;
+      right: 10px;
+    }
+  }
+  button {
+    margin-top: 15px;
+    padding: 10px;
+    border-radius: 5px;
+    outline: none;
+    border: none;
+    &.active {
+      background-color: #fe2c55;
+      color: white;
+    }
+  }
+  button[disabled=disabled],button:disabled{
+    cursor:not-allowed;
+  }
+  .back {
+    text-align: center;
+    margin-top: 20px;
+  }
 }
