@@ -1,15 +1,33 @@
-import React from 'react'
-import { useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import { loginApi } from '../services/UserService';
+import { toast } from 'react-toastify';
 
-export default function Login() {
+export const Login = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [isShowPassword, setIsShowPassword] = useState (false);
+
+    const handleLogin = async () => {
+        let res = await loginApi(email, password);
+        if (!email || !password) {
+            toast.error("Email or password is empty");
+            return;
+        }
+
+        if (res && res.token) {
+            localStorage.setItem("token", res.token);
+        }
+        console.log(">>> check login: ", res);
+    };
+    useEffect(()=> {
+        
+    })
   return (
     <div className='login-container col-12 col-sm-4'>
         <div className='title'> Log in</div>
         <div className='text'>Email or Username</div>
         <input 
+        className='input-1'
         type='text' 
         placeholder='Email or Username'
         value={email}
@@ -29,9 +47,11 @@ export default function Login() {
         <button 
             className={email && password ? "active" : ""}
             disabled={email && password ? false : true}
+            onClick={() => handleLogin()}
         >Log in</button>
         <div className='back'>
         <i class="fa-solid fa-angle-left"></i> Go back</div>
     </div>
   )
 }
+export default Login;

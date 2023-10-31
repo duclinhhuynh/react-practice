@@ -49,7 +49,7 @@ code {
       right: 10px;
     }
   }
-  button {
+  .login-container button {
     margin-top: 15px;
     padding: 10px;
     border-radius: 5px;
@@ -60,7 +60,7 @@ code {
       color: white;
     }
   }
-  button[disabled=disabled],button:disabled{
+  .login-container button[disabled=disabled],button:disabled{
     cursor:not-allowed;
   }
   .back {
