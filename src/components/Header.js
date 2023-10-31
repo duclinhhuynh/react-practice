@@ -4,9 +4,16 @@ import Form from 'react-bootstrap/Form';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
-import { useLocation, NavLink } from 'react-router-dom';
+import { useLocation, NavLink, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 const Header = (props) => {
   // web smood
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    localStorage.removeItem("token")
+    navigate("/");
+    toast.success("logout success");
+  }
   const location = useLocation();
     return (
       <Navbar expand="lg" className="bg-body-tertiary">
@@ -20,8 +27,8 @@ const Header = (props) => {
               </Nav>
               <Nav>
                 <NavDropdown title="Setting">
-                  <NavDropdown.Item href="/login">Login</NavDropdown.Item>
-                  <NavDropdown.Item href="/logout">
+                <NavLink to= '/login' className='dropdown-item'>Login</NavLink>
+                  <NavDropdown.Item onClick={()=> handleLogout()}>
                     Logout
                   </NavDropdown.Item>
                 </NavDropdown>

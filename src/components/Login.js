@@ -1,22 +1,37 @@
 import React, { useEffect, useState } from 'react'
 import { loginApi } from '../services/UserService';
 import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
 export const Login = () => {
+    const navigate = useNavigate();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [isShowPassword, setIsShowPassword] = useState (false);
-
+    const [loadingApi, setLoadingApi] = useState(false);
+    useEffect(() => {
+        let token = localStorage.getItem("token");
+        if(token){
+            navigate("/")
+        }
+    },[])
     const handleLogin = async () => {
-        let res = await loginApi(email, password);
         if (!email || !password) {
             toast.error("Email or password is empty");
             return;
         }
-
+        setLoadingApi(true);
+        let res = await loginApi(email, password);
         if (res && res.token) {
             localStorage.setItem("token", res.token);
+            navigate("/")
         }
+        else {
+            if(res && res.status === 400){
+                toast.error(res.data.error)
+            }
+        }
+        setLoadingApi(false)
         console.log(">>> check login: ", res);
     };
     useEffect(()=> {
@@ -25,7 +40,7 @@ export const Login = () => {
   return (
     <div className='login-container col-12 col-sm-4'>
         <div className='title'> Log in</div>
-        <div className='text'>Email or Username</div>
+        <div className='text'>Email or Username eve.holt@reqres.in</div>
         <input 
         className='input-1'
         type='text' 
@@ -48,7 +63,8 @@ export const Login = () => {
             className={email && password ? "active" : ""}
             disabled={email && password ? false : true}
             onClick={() => handleLogin()}
-        >Log in</button>
+        >
+       {loadingApi && <i class="fa-solid fa-sync fa-spin"></i>} Log in</button>
         <div className='back'>
         <i class="fa-solid fa-angle-left"></i> Go back</div>
     </div>
