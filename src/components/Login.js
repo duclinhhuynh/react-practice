@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import { loginApi } from '../services/UserService';
 import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { UserContext } from '../context/UseContext';
 
 export const Login = () => {
     const navigate = useNavigate();
@@ -9,12 +10,13 @@ export const Login = () => {
     const [password, setPassword] = useState("");
     const [isShowPassword, setIsShowPassword] = useState (false);
     const [loadingApi, setLoadingApi] = useState(false);
-    useEffect(() => {
-        let token = localStorage.getItem("token");
-        if(token){
-            navigate("/")
-        }
-    },[])
+    const { loginContext } = useContext(UserContext);
+    // useEffect(() => {
+    //     let token = localStorage.getItem("token");
+    //     if(token){
+    //         navigate("/")
+    //     }
+    // },[])
     const handleLogin = async () => {
         if (!email || !password) {
             toast.error("Email or password is empty");
@@ -23,7 +25,7 @@ export const Login = () => {
         setLoadingApi(true);
         let res = await loginApi(email, password);
         if (res && res.token) {
-            localStorage.setItem("token", res.token);
+            loginContext(email,res.token);
             navigate("/")
         }
         else {
@@ -37,6 +39,9 @@ export const Login = () => {
     useEffect(()=> {
         
     })
+    const handleBack =() => {
+     navigate('/')  
+    }
   return (
     <div className='login-container col-12 col-sm-4'>
         <div className='title'> Log in</div>
@@ -66,7 +71,9 @@ export const Login = () => {
         >
        {loadingApi && <i class="fa-solid fa-sync fa-spin"></i>} Log in</button>
         <div className='back'>
-        <i class="fa-solid fa-angle-left"></i> Go back</div>
+        <i class="fa-solid fa-angle-left"></i> 
+        <span onClick={()=> handleBack()}> Go back</span>
+        </div>
     </div>
   )
 }
